@@ -1,0 +1,1532 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Box3Kompas — Box 3, zonder gedoe</title>
+    <meta
+      name="description"
+      content="Upload je documenten. Box3Kompas helpt je box-3 gegevens te verzamelen, controleren en exporteren — klaar voor het nieuwe stelsel." />
+
+    <style>
+      :root {
+        --bg: #0b1020;
+        --bg-2: #0f1730;
+        --card: rgba(255, 255, 255, 0.06);
+        --card-2: rgba(255, 255, 255, 0.09);
+        --border: rgba(255, 255, 255, 0.12);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.7);
+        --faint: rgba(255, 255, 255, 0.55);
+        --primary: #6d5efc;
+        --primary-2: #15c5ff;
+        --ok: #3dff9f;
+        --warn: #ffda70;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        --radius: 16px;
+        --radius-2: 22px;
+        --max: 1120px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+        background:
+          radial-gradient(1200px 700px at 12% 5%, rgba(109, 94, 252, 0.35), transparent 52%),
+          radial-gradient(900px 500px at 88% 15%, rgba(21, 197, 255, 0.28), transparent 55%),
+          radial-gradient(900px 700px at 55% 90%, rgba(61, 255, 159, 0.14), transparent 55%),
+          linear-gradient(180deg, var(--bg), var(--bg-2) 55%, #070a14);
+        color: var(--text);
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .container {
+        width: min(var(--max), calc(100% - 48px));
+        margin: 0 auto;
+      }
+
+      /* Top bar */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        background: rgba(11, 16, 32, 0.6);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 14px 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 220px;
+      }
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background:
+          radial-gradient(12px 12px at 30% 30%, rgba(255, 255, 255, 0.75), transparent 60%),
+          conic-gradient(from 210deg, var(--primary), var(--primary-2), var(--ok), var(--primary));
+        box-shadow: 0 10px 30px rgba(109, 94, 252, 0.22);
+      }
+      .brand strong {
+        font-size: 15px;
+        letter-spacing: -0.01em;
+      }
+      .brand span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .navlinks {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+      .navlinks a {
+        font-size: 14px;
+        color: var(--muted);
+        padding: 8px 10px;
+        border-radius: 10px;
+      }
+      .navlinks a:hover {
+        background: rgba(255, 255, 255, 0.06);
+        text-decoration: none;
+        color: var(--text);
+      }
+
+      .nav-cta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 11px 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.09);
+        text-decoration: none;
+      }
+      .btn.primary {
+        border-color: rgba(109, 94, 252, 0.35);
+        background: linear-gradient(135deg, rgba(109, 94, 252, 1), rgba(21, 197, 255, 0.8));
+        box-shadow: 0 18px 40px rgba(109, 94, 252, 0.24);
+      }
+      .btn.primary:hover {
+        filter: brightness(1.05);
+      }
+      .btn.ghost {
+        background: transparent;
+      }
+      .btn.small {
+        padding: 9px 12px;
+        font-size: 13px;
+        border-radius: 11px;
+      }
+
+      .hamburger {
+        display: none;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .hamburger:focus-visible,
+      .btn:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      details:focus-visible {
+        outline: 3px solid rgba(21, 197, 255, 0.55);
+        outline-offset: 2px;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 56px 0 26px;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 28px;
+        align-items: center;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .badge .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--ok);
+        box-shadow: 0 0 0 4px rgba(61, 255, 159, 0.15);
+      }
+      h1 {
+        margin: 14px 0 12px;
+        font-size: clamp(34px, 4.2vw, 54px);
+        line-height: 1.04;
+        letter-spacing: -0.03em;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 58ch;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+      .micro {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        color: var(--faint);
+        font-size: 13px;
+      }
+      .micro .tick {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .tick svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .hero-card {
+        position: relative;
+        border-radius: var(--radius-2);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background:
+          radial-gradient(500px 300px at 30% 20%, rgba(109, 94, 252, 0.26), transparent 62%),
+          radial-gradient(420px 300px at 70% 80%, rgba(21, 197, 255, 0.2), transparent 60%),
+          rgba(255, 255, 255, 0.05);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .hero-card .inner {
+        padding: 18px;
+      }
+      .hero-card .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .pill {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 6px 10px;
+        border-radius: 999px;
+      }
+      .status {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .status .s {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--warn);
+        box-shadow: 0 0 0 4px rgba(255, 218, 112, 0.16);
+      }
+
+      .mock {
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(10, 14, 28, 0.55);
+        overflow: hidden;
+      }
+      .mock .bar {
+        display: flex;
+        gap: 6px;
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .mock .bar i {
+        width: 10px;
+        height: 10px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .mock .body {
+        padding: 14px;
+      }
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .kpi {
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 10px;
+        min-height: 72px;
+      }
+      .kpi .label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .kpi .value {
+        margin-top: 8px;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+      }
+      .kpi .hint {
+        margin-top: 4px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.58);
+      }
+
+      .mock .list {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1.2fr 0.6fr;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .row .title {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.83);
+      }
+      .row .meta {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.62);
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Sections */
+      section {
+        padding: 50px 0;
+      }
+      .section-title {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+      .section-title h2 {
+        margin: 0;
+        font-size: clamp(22px, 2.2vw, 30px);
+        letter-spacing: -0.02em;
+      }
+      .section-title p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 65ch;
+        line-height: 1.65;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .card {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+      }
+      .card.soft {
+        background: rgba(255, 255, 255, 0.035);
+      }
+      .card h3 {
+        margin: 10px 0 6px;
+        font-size: 16px;
+        letter-spacing: -0.01em;
+      }
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 14px;
+      }
+      .icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background:
+          radial-gradient(18px 18px at 30% 30%, rgba(255, 255, 255, 0.6), transparent 70%),
+          linear-gradient(135deg, rgba(109, 94, 252, 0.8), rgba(21, 197, 255, 0.35));
+      }
+      .icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Timeline */
+      .steps {
+        display: grid;
+        gap: 10px;
+      }
+      .step {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        padding: 14px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .step .n {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+      }
+      .step .t {
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .step .d {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      /* Upload demo */
+      .demo {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 14px;
+        align-items: stretch;
+      }
+      .dropzone {
+        border: 1px dashed rgba(255, 255, 255, 0.26);
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: var(--radius-2);
+        padding: 16px;
+        min-height: 320px;
+        display: grid;
+        gap: 12px;
+      }
+      .dropzone.dragover {
+        border-color: rgba(21, 197, 255, 0.7);
+        box-shadow: 0 0 0 6px rgba(21, 197, 255, 0.08);
+      }
+      .dropzone .headline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .dropzone h3 {
+        margin: 0;
+        font-size: 16px;
+      }
+      .dropzone p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .file-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .file-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .file {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+      }
+      .file .name {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.86);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .file .size {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .result {
+        border-radius: var(--radius-2);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.045);
+        padding: 16px;
+        min-height: 320px;
+        display: grid;
+        gap: 12px;
+      }
+      .result .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .result h3 {
+        margin: 0;
+        font-size: 16px;
+      }
+      .progress {
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .progress > div {
+        height: 100%;
+        width: 0%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--primary), var(--primary-2));
+        transition: width 420ms ease;
+      }
+
+      .kv {
+        display: grid;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      .kv .item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: baseline;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .kv .k {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.76);
+      }
+      .kv .v {
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+      }
+      .mono {
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          Monaco,
+          Consolas,
+          "Liberation Mono",
+          "Courier New";
+      }
+      .note {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      /* Pricing */
+      .price {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-top: 8px;
+        font-variant-numeric: tabular-nums;
+      }
+      .price strong {
+        font-size: 28px;
+        letter-spacing: -0.02em;
+      }
+      .price span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      ul.checks {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0 0;
+        display: grid;
+        gap: 8px;
+      }
+      ul.checks li {
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        gap: 10px;
+        align-items: start;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      /* FAQ */
+      details {
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 12px 14px;
+      }
+      details + details {
+        margin-top: 10px;
+      }
+      summary {
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        outline: none;
+      }
+      details p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 14px;
+      }
+
+      /* CTA */
+      .cta {
+        padding: 36px 0 64px;
+      }
+      .cta-wrap {
+        border-radius: 26px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background:
+          radial-gradient(650px 300px at 20% 20%, rgba(109, 94, 252, 0.28), transparent 60%),
+          radial-gradient(650px 320px at 85% 80%, rgba(21, 197, 255, 0.22), transparent 58%),
+          rgba(255, 255, 255, 0.05);
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+      .cta-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 14px;
+        align-items: center;
+      }
+      .cta h2 {
+        margin: 0;
+        font-size: 26px;
+        letter-spacing: -0.02em;
+      }
+      .cta p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+        max-width: 70ch;
+      }
+      .waitlist {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+      }
+      .waitlist input {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.2);
+        color: var(--text);
+      }
+      .waitlist input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .toast {
+        display: none;
+        margin-top: 10px;
+        border: 1px solid rgba(61, 255, 159, 0.35);
+        background: rgba(61, 255, 159, 0.12);
+        color: rgba(255, 255, 255, 0.86);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+
+      footer {
+        padding: 28px 0 44px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 18px;
+        align-items: start;
+      }
+      .footer-grid .links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .footer-grid .links a {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 14px;
+      }
+      .tiny {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        line-height: 1.6;
+      }
+
+      /* Mobile */
+      @media (max-width: 980px) {
+        .hero-grid,
+        .demo,
+        .cta-grid {
+          grid-template-columns: 1fr;
+        }
+        .brand {
+          min-width: unset;
+        }
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .hamburger {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .navlinks {
+          display: none;
+          position: absolute;
+          top: 62px;
+          left: 0;
+          right: 0;
+          padding: 10px;
+          background: rgba(11, 16, 32, 0.88);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .navlinks.open {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+        .navlinks a {
+          padding: 12px 12px;
+        }
+        .kpis {
+          grid-template-columns: 1fr;
+        }
+        .waitlist {
+          grid-template-columns: 1fr;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          scroll-behavior: auto !important;
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="topbar" role="banner">
+      <div class="container">
+        <nav class="nav" aria-label="Hoofdnavigatie">
+          <a class="brand" href="#top" aria-label="Box3Kompas home">
+            <div class="logo" aria-hidden="true"></div>
+            <div>
+              <strong>Box3Kompas</strong>
+              <span>Upload. Controleer. Export.</span>
+            </div>
+          </a>
+
+          <button class="hamburger" id="hamburger" aria-label="Menu" aria-controls="navlinks" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6h16" />
+              <path d="M4 12h16" />
+              <path d="M4 18h16" />
+            </svg>
+          </button>
+
+          <div class="navlinks" id="navlinks">
+            <a href="#product">Product</a>
+            <a href="#hoe">Hoe het werkt</a>
+            <a href="#demo">Upload-demo</a>
+            <a href="#prijzen">Prijzen</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="nav-cta">
+            <a class="btn ghost" href="#demo">Probeer demo</a>
+            <a class="btn primary" href="#cta">Op de wachtlijst</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <div class="container">
+        <div class="hero">
+          <div class="hero-grid">
+            <div>
+              <div class="badge"><span class="dot" aria-hidden="true"></span> Voorbereid op box 3 in 2028 • Transparant & uitlegbaar</div>
+              <h1>Box 3, zonder gedoe.
+                <span style="display:block; background: linear-gradient(90deg, rgba(109,94,252,1), rgba(21,197,255,1)); -webkit-background-clip:text; background-clip:text; color: transparent;">Van documenten naar aangifte-ready overzicht.</span>
+              </h1>
+              <p class="lead">
+                Upload je bankafschriften, beleggings- en vastgoedoverzichten. Box3Kompas ordent alles, haalt de relevante waarden eruit,
+                en geeft je een controleerbaar resultaat met een duidelijk spoor van bronnen.
+              </p>
+
+              <div class="hero-actions">
+                <a class="btn primary" href="#demo">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3v18" />
+                    <path d="M7 8l5-5 5 5" />
+                    <path d="M7 16h10" />
+                  </svg>
+                  Start gratis scan
+                </a>
+                <a class="btn" href="#hoe">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 7l-5 5 5 5" />
+                    <path d="M20 7l-5 5 5 5" />
+                    <path d="M4 7l5 5-5 5" />
+                  </svg>
+                  Bekijk hoe het werkt
+                </a>
+              </div>
+
+              <div class="micro" aria-label="Kernbeloften">
+                <span class="tick">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  Uitlegbaar met audit trail
+                </span>
+                <span class="tick">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  Privacy-first ontwerp
+                </span>
+                <span class="tick">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z" />
+                    <path d="M3.3 7.5L12 12l8.7-4.5" />
+                    <path d="M12 22V12" />
+                  </svg>
+                  Export naar jouw adviseur
+                </span>
+              </div>
+            </div>
+
+            <aside class="hero-card" aria-label="Voorbeeld dashboard">
+              <div class="inner">
+                <div class="top">
+                  <span class="pill">Voorbeeld • Box 3 Overzicht</span>
+                  <span class="status"><span class="s" aria-hidden="true"></span> In review</span>
+                </div>
+
+                <div class="mock" role="img" aria-label="Mock dashboard met kerncijfers en posten">
+                  <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+                  <div class="body">
+                    <div class="kpis">
+                      <div class="kpi">
+                        <div class="label">Inkomsten</div>
+                        <div class="value">€ 3.420</div>
+                        <div class="hint">rente + dividend</div>
+                      </div>
+                      <div class="kpi">
+                        <div class="label">Waarde-ontwikkeling</div>
+                        <div class="value">€ 12.880</div>
+                        <div class="hint">beleggingen</div>
+                      </div>
+                      <div class="kpi">
+                        <div class="label">Kosten</div>
+                        <div class="value">€ 240</div>
+                        <div class="hint">bank + beheer</div>
+                      </div>
+                    </div>
+                    <div class="list" aria-hidden="true">
+                      <div class="row"><div class="title">Spaarrekening — rente</div><div class="meta">€ 500</div></div>
+                      <div class="row"><div class="title">ETF portefeuille — waarde</div><div class="meta">+ € 8.200</div></div>
+                      <div class="row"><div class="title">Vastgoed — huur / bijtelling</div><div class="meta">€ 4.200</div></div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="note" style="margin: 12px 2px 0;">
+                  Let op: dit is een demo-visual. De echte output bevat bronverwijzingen per bedrag (document → pagina → regel).
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <section id="product">
+        <div class="container">
+          <div class="section-title">
+            <div>
+              <h2>Een slim systeem voor een ingewikkelde aangifte</h2>
+              <p>
+                Je product kan drie dingen tegelijk doen: (1) documenten begrijpen, (2) regels en uitzonderingen toepassen,
+                en (3) alles uitlegbaar maken.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="M7 10l5 5 5-5" />
+                  <path d="M12 15V3" />
+                </svg>
+              </div>
+              <h3>Document intake (eenvoudig)</h3>
+              <p>
+                Drag & drop alles: bankafschriften, jaaroverzichten, beleggingsrapporten, WOZ/huur, leningen, crypto exports.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18h6" />
+                  <path d="M10 22h4" />
+                  <path d="M12 2a7 7 0 0 0-4 12c.6.5 1 1.2 1 2v1h6v-1c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z" />
+                </svg>
+              </div>
+              <h3>AI extractie + kennislaag</h3>
+              <p>
+                Combineer OCR/parsings, transactieherkenning en een regel-engine met updates uit wetgeving en uitspraken.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16v16H4z" />
+                  <path d="M8 9h8" />
+                  <path d="M8 13h6" />
+                  <path d="M8 17h8" />
+                </svg>
+              </div>
+              <h3>Uitlegbaar resultaat</h3>
+              <p>
+                Elk bedrag is klikbaar: je ziet waar het vandaan komt (document, pagina, berekening) en wat je nog moet controleren.
+              </p>
+            </div>
+          </div>
+
+          <div style="height: 14px"></div>
+
+          <div class="grid-2">
+            <div class="card soft">
+              <h3>Wat je app “snapt” (voorbeeldcategorieën)</h3>
+              <p>
+                Banktegoeden & spaargeld • Beleggingen • Onroerende zaken • Vorderingen • Schulden • Overige bezittingen
+                (bijv. crypto en bepaalde verzekeringsproducten).
+              </p>
+            </div>
+            <div class="card soft">
+              <h3>Wat je app “doet” (workflow)</h3>
+              <p>
+                Inlezen → normaliseren → classificeren → berekenen → conflicts detecteren → jou laten accorderen → exporteren.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="hoe">
+        <div class="container">
+          <div class="section-title">
+            <div>
+              <h2>Hoe het werkt</h2>
+              <p>
+                Denk aan “TurboTax voor box 3”, maar dan met document-intelligentie en een audit trail.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="steps" aria-label="Stappen">
+              <div class="step">
+                <div class="n">1</div>
+                <div>
+                  <div class="t">Upload</div>
+                  <div class="d">Sleep je bestanden erin of koppel je bank/broker (later via consent).</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="n">2</div>
+                <div>
+                  <div class="t">Herken & label</div>
+                  <div class="d">Het systeem herkent type documenten en haalt bedragen, datums en context uit tabellen en tekst.</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="n">3</div>
+                <div>
+                  <div class="t">Controleer</div>
+                  <div class="d">Jij ziet onduidelijkheden (bijv. ontbrekend jaaroverzicht) en klikt door naar de bronregel.</div>
+                </div>
+              </div>
+              <div class="step">
+                <div class="n">4</div>
+                <div>
+                  <div class="t">Exporteer</div>
+                  <div class="d">Download een overzicht (PDF/Excel/JSON) of deel direct met je fiscalist.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21V7a2 2 0 0 0-2-2h-7" />
+                  <path d="M14 3H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2" />
+                  <path d="M14 3v4a2 2 0 0 0 2 2h4" />
+                </svg>
+              </div>
+              <h3>Waarom consumenten dit willen</h3>
+              <p>
+                Het nieuwe stelsel draait om werkelijk rendement: meer bronnen, meer details, meer uitzonderingen.
+                Consumenten willen vooral: snel klaar zijn, geen fouten maken, en precies begrijpen wat de app heeft gedaan.
+              </p>
+              <div style="height: 10px"></div>
+              <a class="btn small" href="#demo">Bekijk upload-demo</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo">
+        <div class="container">
+          <div class="section-title">
+            <div>
+              <h2>Upload-demo (frontend)</h2>
+              <p>
+                Dit is een statische demo om de flow te laten zien. Geen bestanden worden echt geüpload (er is geen backend aangesloten).
+              </p>
+            </div>
+          </div>
+
+          <div class="demo" aria-label="Upload demo">
+            <div class="dropzone" id="dropzone" role="region" aria-label="Bestanden uploaden">
+              <div class="headline">
+                <h3>1) Voeg documenten toe</h3>
+                <span class="pill" id="fileCount">0 bestanden</span>
+              </div>
+              <p>
+                Sleep hier je bestanden, of kies ze via de knop. Voorbeeld: <span class="mono">bank.pdf</span>, <span class="mono">jaaroverzicht-broker.pdf</span>,
+                <span class="mono">huur-2028.xlsx</span>.
+              </p>
+              <div class="file-actions">
+                <label class="btn" for="fileInput" style="cursor:pointer;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <path d="M17 8l-5-5-5 5" />
+                    <path d="M12 3v12" />
+                  </svg>
+                  Kies bestanden
+                </label>
+                <input id="fileInput" type="file" multiple hidden />
+                <button class="btn" id="clearBtn" type="button">Leegmaken</button>
+              </div>
+              <div class="file-list" id="fileList" aria-live="polite"></div>
+
+              <div style="margin-top:auto; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+                <p class="note" style="margin:0;">Tip: bouw later een “bronverzoek” scherm: ontbrekende documenten automatisch opvragen.</p>
+                <button class="btn primary" id="analyzeBtn" type="button">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 12h-4l-3 9-4-18-3 9H2" />
+                  </svg>
+                  Analyseer (demo)
+                </button>
+              </div>
+            </div>
+
+            <div class="result" role="region" aria-label="Resultaat">
+              <div class="top">
+                <h3>2) Resultaat (voorbeeld)</h3>
+                <span class="pill" id="resultState">Wacht op bestanden</span>
+              </div>
+              <div class="progress" aria-label="Voortgang">
+                <div id="progressBar"></div>
+              </div>
+              <div class="kv" id="kv"></div>
+              <p class="note" id="resultNote">
+                Voeg bestanden toe en klik op <strong>Analyseer</strong>. Deze demo vult voorbeeldwaarden in om de UI te tonen.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="prijzen">
+        <div class="container">
+          <div class="section-title">
+            <div>
+              <h2>Prijzen (voorbeeld)</h2>
+              <p>
+                Start simpel: B2C freemium voor consumenten, met een “deel met adviseur” upgrade.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid-3" aria-label="Prijsplannen">
+            <div class="card soft">
+              <h3>Free</h3>
+              <div class="price"><strong>€ 0</strong> <span>/ jaar (demo)</span></div>
+              <ul class="checks">
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Basis upload + documentclassificatie
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Overzicht bezittingen & schulden
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  1 export (PDF)
+                </li>
+              </ul>
+            </div>
+
+            <div class="card" style="border-color: rgba(109,94,252,0.35);">
+              <h3>Plus</h3>
+              <div class="price"><strong>€ 49</strong> <span>/ jaar</span></div>
+              <ul class="checks">
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Uitlegbaar audit trail per bedrag
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Detectie van ontbrekende documenten
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Exports: PDF + Excel + JSON
+                </li>
+              </ul>
+              <div style="height: 12px"></div>
+              <a class="btn primary" href="#cta">Kies Plus</a>
+            </div>
+
+            <div class="card soft">
+              <h3>Advisor</h3>
+              <div class="price"><strong>€ 149</strong> <span>/ jaar</span></div>
+              <ul class="checks">
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Deel link met fiscalist (rollen)
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Extra checks (consistentie, dubbels)
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+                  Audit-export voor dossier
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="note" style="margin-top: 12px;">
+            Prijzen zijn placeholders voor je pitch. Voor MVP kun je ook starten met “eenmalige aangifte-scan”.
+          </p>
+        </div>
+      </section>
+
+      <section id="faq">
+        <div class="container">
+          <div class="section-title">
+            <div>
+              <h2>FAQ</h2>
+              <p>
+                Veelgestelde vragen die je meteen op je homepage wilt tackelen.
+              </p>
+            </div>
+          </div>
+
+          <details>
+            <summary>Is dit officieel belastingadvies?</summary>
+            <p>
+              Nee. Het doel is om de administratie en berekeningen te vereenvoudigen, mét bronverwijzingen. De gebruiker blijft verantwoordelijk
+              voor de uiteindelijke aangifte.
+            </p>
+          </details>
+          <details>
+            <summary>Wat als wetgeving of rekenregels veranderen?</summary>
+            <p>
+              Bouw je product alsof regels “configuratie” zijn: versiebeheer, tests, en release-notes. Toon in de UI altijd:
+              <em>welke regelset</em> is gebruikt en vanaf welke datum.
+            </p>
+          </details>
+          <details>
+            <summary>Hoe waarborg je privacy?</summary>
+            <p>
+              Denk aan: dataminimalisatie, encryptie-at-rest & in-transit, strikte toegangsrollen, en loggen van elke toegang.
+              Voor gevoelige documenten kun je ook “lokale verwerking” (in browser) overwegen.
+            </p>
+          </details>
+          <details>
+            <summary>Welke documenten wil je als minimum?</summary>
+            <p>
+              In de praktijk: bankjaaroverzichten, broker-jaaroverzichten, eventuele huur/WOZ/leningoverzichten, en (indien relevant)
+              crypto exports. Je app kan dit automatisch afvinken.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section class="cta" id="cta">
+        <div class="container">
+          <div class="cta-wrap">
+            <div class="cta-grid">
+              <div>
+                <h2>Wil je dit product echt bouwen?</h2>
+                <p>
+                  Laat je e-mailadres achter voor de MVP-wachtlijst (of vervang dit blok met “Plan een intake”).
+                  Ik kan je ook helpen met de volgende stap: UX-flow + datamodel + MVP-scope.
+                </p>
+              </div>
+              <div>
+                <form class="waitlist" id="waitlistForm">
+                  <input type="email" name="email" placeholder="jij@voorbeeld.nl" required aria-label="E-mailadres" />
+                  <button class="btn primary" type="submit">Aanmelden</button>
+                </form>
+                <div class="toast" id="toast" role="status" aria-live="polite"></div>
+                <p class="tiny" style="margin-top: 10px;">
+                  Door je aan te melden ga je akkoord met de voorwaarden en privacyverklaring (placeholder).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div class="brand" style="min-width:unset;">
+              <div class="logo" aria-hidden="true"></div>
+              <div>
+                <strong>Box3Kompas</strong>
+                <span>Een conceptsite • geen productieomgeving</span>
+              </div>
+            </div>
+            <p class="tiny" style="margin-top: 10px;">
+              Disclaimer: deze website is een ontwerpvoorbeeld. Koppel je een echte AI-processor en fiscale kennis?
+              Zorg dan voor juridische checks, security review, en een helder kwaliteits-/aansprakelijkheidsmodel.
+            </p>
+          </div>
+          <div class="links" aria-label="Footer links">
+            <a href="#product">Product</a>
+            <a href="#hoe">Hoe het werkt</a>
+            <a href="#demo">Upload-demo</a>
+            <a href="#prijzen">Prijzen</a>
+            <a href="#faq">FAQ</a>
+            <a href="#top">Terug naar boven</a>
+          </div>
+        </div>
+        <div class="tiny" style="margin-top: 18px;">
+          © <span id="year"></span> Box3Kompas. Alle rechten voorbehouden.
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Smooth scroll for in-page anchors
+      for (const a of document.querySelectorAll('a[href^="#"]')) {
+        a.addEventListener('click', (e) => {
+          const href = a.getAttribute('href');
+          if (!href || href === '#') return;
+          const el = document.querySelector(href);
+          if (!el) return;
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // close mobile nav if open
+          const nav = document.getElementById('navlinks');
+          const btn = document.getElementById('hamburger');
+          if (nav?.classList.contains('open')) {
+            nav.classList.remove('open');
+            btn?.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // Mobile nav toggle
+      const hamburger = document.getElementById('hamburger');
+      const navlinks = document.getElementById('navlinks');
+      hamburger?.addEventListener('click', () => {
+        const open = navlinks.classList.toggle('open');
+        hamburger.setAttribute('aria-expanded', String(open));
+      });
+
+      // Upload demo
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fileInput');
+      const fileList = document.getElementById('fileList');
+      const fileCount = document.getElementById('fileCount');
+      const clearBtn = document.getElementById('clearBtn');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const resultState = document.getElementById('resultState');
+      const progressBar = document.getElementById('progressBar');
+      const kv = document.getElementById('kv');
+      const resultNote = document.getElementById('resultNote');
+
+      /** @type {File[]} */
+      let files = [];
+      let timer = null;
+
+      const fmtBytes = (n) => {
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let idx = 0;
+        let num = n;
+        while (num >= 1024 && idx < units.length - 1) {
+          num /= 1024;
+          idx++;
+        }
+        return `${num.toFixed(idx === 0 ? 0 : 1)} ${units[idx]}`;
+      };
+
+      const updateUI = () => {
+        fileList.innerHTML = '';
+        for (const f of files) {
+          const el = document.createElement('div');
+          el.className = 'file';
+          el.innerHTML = `<div class="name" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</div><div class="size">${fmtBytes(f.size)}</div>`;
+          fileList.appendChild(el);
+        }
+        fileCount.textContent = `${files.length} bestand${files.length === 1 ? '' : 'en'}`;
+        analyzeBtn.disabled = files.length === 0;
+        clearBtn.disabled = files.length === 0;
+        if (files.length === 0) {
+          resultState.textContent = 'Wacht op bestanden';
+          progressBar.style.width = '0%';
+          kv.innerHTML = '';
+          resultNote.innerHTML = 'Voeg bestanden toe en klik op <strong>Analyseer</strong>. Deze demo vult voorbeeldwaarden in om de UI te tonen.';
+        } else {
+          resultState.textContent = 'Klaar om te analyseren';
+        }
+      };
+
+      const addFiles = (fileListLike) => {
+        const incoming = Array.from(fileListLike || []);
+        // De-dup op naam + size (simpel)
+        for (const f of incoming) {
+          if (!files.some((x) => x.name === f.name && x.size === f.size)) {
+            files.push(f);
+          }
+        }
+        updateUI();
+      };
+
+      dropzone?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+      dropzone?.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+      dropzone?.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer?.files?.length) addFiles(e.dataTransfer.files);
+      });
+      fileInput?.addEventListener('change', () => {
+        if (fileInput.files?.length) addFiles(fileInput.files);
+        fileInput.value = '';
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        files = [];
+        if (timer) window.clearInterval(timer);
+        timer = null;
+        updateUI();
+      });
+
+      const demoRows = [
+        { k: 'Inkomsten (rente + dividend)', v: '€ 3.420' },
+        { k: 'Waarde-ontwikkeling beleggingen', v: '+ € 12.880' },
+        { k: 'Huur / vastgoedbijtelling (indicatief)', v: '€ 4.200' },
+        { k: 'Kosten (bank/beheer/transactie)', v: '€ 240' },
+        { k: 'Schuldrente (indicatief)', v: '€ 1.050' }
+      ];
+
+      const fillDemoResult = () => {
+        kv.innerHTML = '';
+        for (const row of demoRows) {
+          const el = document.createElement('div');
+          el.className = 'item';
+          el.innerHTML = `<div class="k">${escapeHtml(row.k)}</div><div class="v">${escapeHtml(row.v)}</div>`;
+          kv.appendChild(el);
+        }
+        resultNote.innerHTML =
+          'Demo-output: in een echte versie klik je door naar <strong>bronregels</strong> en zie je per post de gebruikte rekenregel + versie.';
+      };
+
+      analyzeBtn?.addEventListener('click', () => {
+        if (files.length === 0) return;
+        if (timer) window.clearInterval(timer);
+        let p = 0;
+        resultState.textContent = 'Bezig met analyseren…';
+        kv.innerHTML = '';
+        resultNote.textContent = 'Simulatie: OCR → classificatie → extractie → checks → overzicht.';
+        progressBar.style.width = '0%';
+
+        timer = window.setInterval(() => {
+          // Non-lineaire progressie, voelt “echter”
+          p += p < 70 ? 10 : p < 90 ? 6 : 3;
+          if (p > 100) p = 100;
+          progressBar.style.width = `${p}%`;
+
+          if (p === 40) resultState.textContent = 'Documenten herkend';
+          if (p === 70) resultState.textContent = 'Bedragen & perioden geëxtraheerd';
+          if (p === 90) resultState.textContent = 'Consistentiechecks';
+          if (p === 100) {
+            window.clearInterval(timer);
+            timer = null;
+            resultState.textContent = 'Klaar (demo)';
+            fillDemoResult();
+          }
+        }, 240);
+      });
+
+      // Waitlist form (frontend only)
+      const form = document.getElementById('waitlistForm');
+      const toast = document.getElementById('toast');
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const email = String(data.get('email') || '').trim();
+        if (!email) return;
+        toast.style.display = 'block';
+        toast.textContent = `Thanks! We hebben ${email} (demo) toegevoegd aan de wachtlijst.`;
+        form.reset();
+        window.setTimeout(() => (toast.style.display = 'none'), 5200);
+      });
+
+      // Helpers
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+      }
+
+      document.getElementById('year').textContent = String(new Date().getFullYear());
+      updateUI();
+    </script>
+  </body>
+</html>
