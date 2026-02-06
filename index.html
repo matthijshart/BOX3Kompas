@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Box3Pilot Demo — Wizard</title>
+  <meta name="description" content="Interactieve demo van de Box3Pilot wizard." />
+  <meta name="theme-color" content="#0b1020" />
+  <style>
+    :root{
+      --bg:#0b1020;
+      --bg2:#0f1730;
+      --text:#e7ecff;
+      --muted: rgba(231,236,255,.74);
+      --line: rgba(231,236,255,.14);
+      --card: rgba(255,255,255,.05);
+      --shadow: 0 24px 80px rgba(0,0,0,.45);
+      --accent:#5eead4;
+      --accent2:#60a5fa;
+      --ok:#34d399;
+      --danger:#fb7185;
+      --radius:18px;
+      --radius2:26px;
+      --max: 1060px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(900px 500px at 20% 0%, rgba(96,165,250,.20), transparent 60%),
+        radial-gradient(900px 500px at 85% 15%, rgba(94,234,212,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color:var(--text);
+      line-height:1.5;
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:var(--max); margin:0 auto; padding:0 20px}
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(11,16,32,.72);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(231,236,255,.08);
+    }
+    .header-inner{
+      height:72px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+    }
+    .brand{display:flex; gap:12px; align-items:center; font-weight:800}
+    .logo{
+      width:40px;height:40px;border-radius:14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(94,234,212,.9), rgba(96,165,250,.5) 45%, rgba(0,0,0,0) 70%),
+        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0));
+      border:1px solid rgba(231,236,255,.16);
+      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+    }
+    .btn{
+      border:1px solid rgba(231,236,255,.14);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      display:inline-flex; gap:10px; align-items:center;
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(94,234,212,.22), rgba(96,165,250,.18));
+      border-color: rgba(94,234,212,.25);
+    }
+    .btn:disabled{opacity:.45; cursor:not-allowed}
+    main{padding:26px 0 72px}
+    h1{margin:8px 0 6px; font-size: clamp(1.7rem, 3.5vw, 2.4rem)}
+    p{margin:0; color:var(--muted)}
+
+    .shell{
+      margin-top:18px;
+      border:1px solid rgba(231,236,255,.14);
+      background: rgba(255,255,255,.04);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .shell-top{
+      padding:14px 16px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      border-bottom:1px solid rgba(231,236,255,.08);
+      background: rgba(255,255,255,.02);
+    }
+    .chip{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:7px 10px; border-radius:999px;
+      border:1px solid rgba(231,236,255,.14);
+      background:rgba(0,0,0,.16);
+      color: rgba(231,236,255,.85);
+      font-size:.88rem;
+    }
+    .chip .dot{width:9px;height:9px;border-radius:99px;background:var(--accent2); box-shadow:0 0 0 4px rgba(96,165,250,.10)}
+    .steps{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding:12px 16px;
+      border-bottom:1px solid rgba(231,236,255,.08);
+    }
+    .step{
+      display:flex; gap:10px; align-items:center;
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(231,236,255,.12);
+      background: rgba(255,255,255,.02);
+      color: rgba(231,236,255,.78);
+      font-weight:700;
+      font-size:.92rem;
+    }
+    .step.active{
+      border-color: rgba(94,234,212,.26);
+      background: rgba(94,234,212,.08);
+      color: rgba(231,236,255,.92);
+    }
+    .n{
+      width:24px; height:24px; border-radius:10px;
+      display:grid; place-items:center;
+      border:1px solid rgba(231,236,255,.14);
+      background: rgba(0,0,0,.18);
+      font-size:.85rem;
+    }
+    .content{padding:16px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      align-items:start;
+    }
+    .panel{
+      border:1px solid rgba(231,236,255,.12);
+      background: rgba(0,0,0,.14);
+      border-radius: var(--radius);
+      padding:14px;
+    }
+    .field{margin-top:10px}
+    .field label{display:block; font-size:.88rem; color: rgba(231,236,255,.70); margin-bottom:6px}
+    .field input, .field select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(231,236,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline:none;
+    }
+    .field input:focus, .field select:focus{border-color: rgba(96,165,250,.35)}
+    .checklist{margin:10px 0 0; padding:0; list-style:none; display:grid; gap:8px}
+    .check{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 10px;
+      border:1px solid rgba(231,236,255,.10);
+      border-radius:14px;
+      background: rgba(255,255,255,.02);
+    }
+    .check input{margin-top:3px}
+    .check strong{display:block}
+    .check span{display:block; color: var(--muted); font-size:.92rem}
+
+    .drop{
+      border:1px dashed rgba(231,236,255,.22);
+      background: rgba(255,255,255,.02);
+      border-radius:16px;
+      padding:14px;
+      text-align:center;
+      color: rgba(231,236,255,.72);
+    }
+    .drop small{display:block; margin-top:8px; color: rgba(231,236,255,.55)}
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      border:1px solid rgba(231,236,255,.14);
+      background: rgba(255,255,255,.03);
+      padding:8px 10px;
+      border-radius:999px;
+      margin-top:10px;
+      font-size:.9rem;
+    }
+    .pill .b{width:10px;height:10px;border-radius:99px;background:var(--ok); box-shadow:0 0 0 4px rgba(52,211,153,.10)}
+    .actions{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px;
+      padding:14px 16px;
+      border-top:1px solid rgba(231,236,255,.08);
+      background: rgba(255,255,255,.02);
+    }
+    .kpi{
+      display:grid; gap:10px; margin-top:10px;
+    }
+    .kpi .row{
+      display:flex; justify-content:space-between; gap:12px;
+      padding:10px 12px;
+      border:1px solid rgba(231,236,255,.10);
+      background: rgba(255,255,255,.02);
+      border-radius:14px;
+      color: rgba(231,236,255,.86);
+      font-size:.95rem;
+    }
+    .kpi .row.total{
+      border-color: rgba(94,234,212,.22);
+      background: linear-gradient(135deg, rgba(94,234,212,.10), rgba(96,165,250,.08));
+      font-weight:800;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-inner">
+        <a class="brand" href="index.html">
+          <span class="logo" aria-hidden="true"></span>
+          <span>Box3Pilot <span style="display:block;font-size:.78rem;color:rgba(231,236,255,.65);font-weight:650">Demo‑wizard</span></span>
+        </a>
+        <div style="display:flex; gap:10px; align-items:center">
+          <a class="btn" href="index.html">← Terug</a>
+          <button class="btn primary" id="reset">Reset demo</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>Voeg je vermogen toe, laat de tool het werk doen</h1>
+      <p>Deze demo laat de flow zien: onboarding → categorieën → uploads → review → export.</p>
+
+      <div class="shell">
+        <div class="shell-top">
+          <span class="chip"><span class="dot"></span> Jaar <strong id="yearChip">2028</strong> • Demo‑dossier</span>
+          <span class="chip">Status: <strong id="statusChip">Invoer</strong></span>
+        </div>
+
+        <div class="steps" id="steps">
+          <div class="step active" data-step="1"><span class="n">1</span> Profiel</div>
+          <div class="step" data-step="2"><span class="n">2</span> Vermogen</div>
+          <div class="step" data-step="3"><span class="n">3</span> Uploads</div>
+          <div class="step" data-step="4"><span class="n">4</span> Review</div>
+        </div>
+
+        <div class="content">
+          <div class="grid">
+            <div class="panel" id="mainPanel"></div>
+            <div class="panel" id="sidePanel"></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="back" disabled>← Vorige</button>
+          <div style="display:flex; gap:10px; align-items:center">
+            <span style="color:rgba(231,236,255,.60); font-size:.92rem" id="hint">Stap 1 van 4</span>
+            <button class="btn primary" id="next">Volgende →</button>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:12px; color:rgba(231,236,255,.55); font-size:.92rem">
+        Tip: in de echte app wordt elke AI‑herkenning voorzien van “bron + confidence + override”, en krijgt elk vermogensobject een bewijs‑map.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    const KEY = "box3pilot_demo_state_v1";
+
+    const state = JSON.parse(localStorage.getItem(KEY) || "null") || {
+      step: 1,
+      year: "2028",
+      partner: "0",
+      categories: {
+        bank: true, beleggingen: true, vastgoed: false, crypto: false, leningen: false, verzekeringen: false
+      },
+      uploads: { bank: false, broker: false, woz: false, facturen: false },
+      numbers: { rente: 2500, dividend: 1200, aanwas: 8000, huur: 0, verkoop: 0, kosten: 200 }
+    };
+
+    const stepsEl = document.getElementById('steps');
+    const mainPanel = document.getElementById('mainPanel');
+    const sidePanel = document.getElementById('sidePanel');
+    const btnBack = document.getElementById('back');
+    const btnNext = document.getElementById('next');
+    const hint = document.getElementById('hint');
+    const yearChip = document.getElementById('yearChip');
+    const statusChip = document.getElementById('statusChip');
+    const btnReset = document.getElementById('reset');
+
+    function save(){
+      localStorage.setItem(KEY, JSON.stringify(state));
+    }
+
+    function fmtEUR(n){
+      const sign = n < 0 ? "-" : "";
+      const abs = Math.abs(n);
+      return sign + "€ " + abs.toLocaleString('nl-NL', {maximumFractionDigits: 0});
+    }
+
+    function calc(){
+      const resultaat = (state.numbers.rente + state.numbers.dividend + state.numbers.aanwas + state.numbers.huur + state.numbers.verkoop) - state.numbers.kosten;
+      const heffingsvrij = 1800 * (state.partner === "1" ? 2 : 1);
+      const belastbaar = Math.max(0, resultaat - heffingsvrij);
+      const belasting = belastbaar * 0.36;
+      const verlies = resultaat < 0 ? Math.max(0, Math.abs(resultaat) - 500) : 0;
+      return { resultaat, heffingsvrij, belastbaar, belasting, verlies };
+    }
+
+    function completeness(){
+      // Very simple: if bank/beleggingen selected, check if upload flagged
+      let need = 0, ok = 0;
+      if(state.categories.bank){ need++; if(state.uploads.bank) ok++; }
+      if(state.categories.beleggingen){ need++; if(state.uploads.broker) ok++; }
+      if(state.categories.vastgoed){ need++; if(state.uploads.woz) ok++; need++; if(state.uploads.facturen) ok++; }
+      if(state.categories.crypto){ need++; if(state.uploads.broker) ok++; } // reuse in demo
+      if(need === 0) return 100;
+      return Math.round((ok/need)*100);
+    }
+
+    function stepIndicator(){
+      document.querySelectorAll('.step').forEach(el => {
+        const s = Number(el.dataset.step);
+        el.classList.toggle('active', s === state.step);
+      });
+      btnBack.disabled = state.step === 1;
+      btnNext.textContent = (state.step === 4) ? "Naar export →" : "Volgende →";
+      hint.textContent = `Stap ${state.step} van 4`;
+      yearChip.textContent = state.year;
+
+      const pct = completeness();
+      statusChip.textContent = (pct >= 95) ? "Klaar voor export" : `Compleet: ${pct}%`;
+    }
+
+    function renderSide(){
+      const c = calc();
+      sidePanel.innerHTML = `
+        <div class="chip"><span class="dot"></span> Live berekening (demo)</div>
+        <div class="kpi">
+          <div class="row"><span>Resultaat vóór heffingsvrij</span><strong>${fmtEUR(c.resultaat)}</strong></div>
+          <div class="row"><span>Heffingsvrij</span><strong>${fmtEUR(c.heffingsvrij)}</strong></div>
+          <div class="row"><span>Belastbaar</span><strong>${fmtEUR(c.belastbaar)}</strong></div>
+          <div class="row total"><span>Box‑3‑belasting (36%)</span><strong>${fmtEUR(c.belasting)}</strong></div>
+          <div class="row"><span>Indicatief verlies (na drempel)</span><strong>${fmtEUR(c.verlies)}</strong></div>
+        </div>
+        <div class="pill"><span class="b"></span> Transparant: elke stap is herleidbaar</div>
+      `;
+    }
+
+    function render(){
+      stepIndicator();
+      renderSide();
+
+      if(state.step === 1){
+        mainPanel.innerHTML = `
+          <h2 style="margin:0 0 6px">Profiel</h2>
+          <p>Kies het jaar en of je een fiscaal partner hebt (demo).</p>
+
+          <div class="field">
+            <label for="year">Belastingjaar</label>
+            <select id="year">
+              <option ${state.year==="2028"?"selected":""}>2028</option>
+              <option ${state.year==="2029"?"selected":""}>2029</option>
+              <option ${state.year==="2030"?"selected":""}>2030</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="partner">Fiscaal partner</label>
+            <select id="partner">
+              <option value="0" ${state.partner==="0"?"selected":""}>Nee</option>
+              <option value="1" ${state.partner==="1"?"selected":""}>Ja</option>
+            </select>
+          </div>
+
+          <div class="pill" style="margin-top:12px">
+            <span class="b" style="background:var(--accent2); box-shadow:0 0 0 4px rgba(96,165,250,.10)"></span>
+            Volgende: kies je vermogenscategorieën
+          </div>
+        `;
+
+        document.getElementById('year').addEventListener('change', e => { state.year = e.target.value; save(); render(); });
+        document.getElementById('partner').addEventListener('change', e => { state.partner = e.target.value; save(); render(); });
+      }
+
+      if(state.step === 2){
+        mainPanel.innerHTML = `
+          <h2 style="margin:0 0 6px">Vermogenscategorieën</h2>
+          <p>Vink aan wat je hebt. De echte app past hier de vragen & verplichtingen op aan.</p>
+
+          <ul class="checklist">
+            ${catRow('bank','Bank & spaargeld','Afschriften/CSV → rente & bankkosten.')}
+            ${catRow('beleggingen','Beleggingen','Broker-export → aanwas, dividend en kosten.')}
+            ${catRow('vastgoed','Onroerende zaken','WOZ + gebruikstype + onderhoud/verbetering.')}
+            ${catRow('crypto','Crypto','Exchange export/API → aanwas en opbrengsten.')}
+            ${catRow('leningen','Vorderingen & schulden','Rente, aflossing, kwijtschelding.')}
+            ${catRow('verzekeringen','Verzekeringsproducten','Jaaropgave → waarde begin/einde.')}
+          </ul>
+
+          <div class="pill"><span class="b"></span> Volgende: uploads en bewijs</div>
+        `;
+
+        document.querySelectorAll('[data-cat]').forEach(inp => {
+          inp.addEventListener('change', e => {
+            const k = e.target.dataset.cat;
+            state.categories[k] = e.target.checked;
+            save(); renderSide(); stepIndicator();
+          });
+        });
+      }
+
+      if(state.step === 3){
+        mainPanel.innerHTML = `
+          <h2 style="margin:0 0 6px">Uploads & bewijs</h2>
+          <p>In de echte tool sleep je bestanden hierin. In deze demo zet je “upload voltooid” aan.</p>
+
+          <div class="drop">
+            <strong>Drag & drop (demo)</strong><br/>
+            Bank CSV • Broker export • Jaaropgave • Facturen • Notaris • Screenshots
+            <small>Tip: koppel elk document aan een vermogensobject (pand, rekening, wallet).</small>
+          </div>
+
+          <div style="margin-top:12px; display:grid; gap:10px">
+            ${uploadToggle('bank','Bankbestand verwerkt', state.categories.bank)}
+            ${uploadToggle('broker','Brokerbestand verwerkt', state.categories.beleggingen || state.categories.crypto)}
+            ${uploadToggle('woz','WOZ/waarde vastgelegd', state.categories.vastgoed)}
+            ${uploadToggle('facturen','Facturen gekoppeld (onderhoud/verbetering)', state.categories.vastgoed)}
+          </div>
+
+          <div class="pill"><span class="b"></span> Volgende: review & export</div>
+        `;
+
+        document.querySelectorAll('[data-upload]').forEach(inp => {
+          inp.addEventListener('change', e => {
+            const k = e.target.dataset.upload;
+            state.uploads[k] = e.target.checked;
+            save(); renderSide(); stepIndicator();
+          });
+        });
+      }
+
+      if(state.step === 4){
+        const c = calc();
+        mainPanel.innerHTML = `
+          <h2 style="margin:0 0 6px">Review</h2>
+          <p>Dit is de plek waar Box3Pilot per categorie “check‑pagina’s” toont, met uitleg en overrides.</p>
+
+          <div class="panel" style="margin-top:12px">
+            <strong>Snelle controles (demo)</strong>
+            <ul style="margin:10px 0 0; color:rgba(231,236,255,.82)">
+              <li>Compleetheid dossier: <strong>${completeness()}%</strong></li>
+              <li>Resultaat vóór heffingsvrij: <strong>${fmtEUR(c.resultaat)}</strong></li>
+              <li>Belastbaar: <strong>${fmtEUR(c.belastbaar)}</strong> • Belasting: <strong>${fmtEUR(c.belasting)}</strong></li>
+            </ul>
+          </div>
+
+          <div style="margin-top:12px">
+            <strong>Handmatige override (demo)</strong>
+            <div class="field">
+              <label for="aanwas">Waardeontwikkeling (aanwas) aanpassen</label>
+              <input id="aanwas" value="${state.numbers.aanwas}" inputmode="decimal"/>
+            </div>
+            <div class="field">
+              <label for="kosten">Kosten aanpassen</label>
+              <input id="kosten" value="${state.numbers.kosten}" inputmode="decimal"/>
+            </div>
+          </div>
+
+          <div class="pill"><span class="b"></span> Klik “Naar export” om te zien hoe kopieer‑velden eruit kunnen zien.</div>
+        `;
+
+        const parse = v => Number(String(v||"0").replace(/\./g,'').replace(',','.')) || 0;
+
+        document.getElementById('aanwas').addEventListener('input', e => { state.numbers.aanwas = parse(e.target.value); save(); renderSide(); });
+        document.getElementById('kosten').addEventListener('input', e => { state.numbers.kosten = parse(e.target.value); save(); renderSide(); });
+      }
+    }
+
+    function catRow(key, title, desc){
+      const checked = !!state.categories[key];
+      return `
+        <li class="check">
+          <input type="checkbox" data-cat="${key}" ${checked ? "checked" : ""} />
+          <div>
+            <strong>${title}</strong>
+            <span>${desc}</span>
+          </div>
+        </li>
+      `;
+    }
+
+    function uploadToggle(key, label, enabled){
+      if(!enabled){
+        return `
+          <div class="check" style="opacity:.45">
+            <input type="checkbox" disabled />
+            <div><strong>${label}</strong><span>Niet geselecteerd in jouw categorieën.</span></div>
+          </div>
+        `;
+      }
+      const checked = !!state.uploads[key];
+      return `
+        <div class="check">
+          <input type="checkbox" data-upload="${key}" ${checked ? "checked" : ""} />
+          <div><strong>${label}</strong><span>Markeer dit om te zien hoe de “compleetheid” stijgt.</span></div>
+        </div>
+      `;
+    }
+
+    btnBack.addEventListener('click', () => {
+      state.step = Math.max(1, state.step - 1);
+      save(); render();
+    });
+
+    btnNext.addEventListener('click', () => {
+      if(state.step < 4){
+        state.step += 1;
+        save(); render();
+        return;
+      }
+
+      // Step 4 -> "export" modal-like screen
+      const c = calc();
+      mainPanel.innerHTML = `
+        <h2 style="margin:0 0 6px">Export (demo)</h2>
+        <p>Kopieer de waarden naar je IB‑aangifte (voorbeeldweergave).</p>
+
+        <div class="panel" style="margin-top:12px">
+          <strong>Te kopiëren waarden</strong>
+          <div class="kpi" style="margin-top:10px">
+            <div class="row"><span>Resultaat uit sparen en beleggen</span><strong>${fmtEUR(c.resultaat)}</strong></div>
+            <div class="row"><span>Heffingsvrij</span><strong>${fmtEUR(c.heffingsvrij)}</strong></div>
+            <div class="row"><span>Belastbaar inkomen box 3</span><strong>${fmtEUR(c.belastbaar)}</strong></div>
+            <div class="row total"><span>Verschuldigde box‑3‑belasting</span><strong>${fmtEUR(c.belasting)}</strong></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:12px">
+          <strong>Jaarrapport (demo)</strong>
+          <p style="margin-top:6px">In de echte app kun je hier een PDF/Excel exporteren met detailregels en bijlagenlijst.</p>
+          <div class="pill"><span class="b"></span> Audit‑ready: bewijs + berekening + versiebeheer</div>
+        </div>
+      `;
+
+      statusChip.textContent = "Export klaar";
+      btnNext.disabled = true;
+      hint.textContent = "Demo afgerond";
+      save();
+    });
+
+    btnReset.addEventListener('click', () => {
+      localStorage.removeItem(KEY);
+      location.reload();
+    });
+
+    render();
+  </script>
+</body>
+</html>
