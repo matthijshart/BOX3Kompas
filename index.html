@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Box3Pilot Demo — Wizard</title>
   <meta name="description" content="Interactieve demo van de Box3Pilot wizard." />
-  <meta name="theme-color" content="#0b1020" />
+  <meta name="theme-color" content="#2a120a" />
   <style>
     :root{
-      --bg:#0b1020;
-      --bg2:#0f1730;
-      --text:#e7ecff;
-      --muted: rgba(231,236,255,.74);
-      --line: rgba(231,236,255,.14);
-      --card: rgba(255,255,255,.05);
-      --shadow: 0 24px 80px rgba(0,0,0,.45);
-      --accent:#5eead4;
-      --accent2:#60a5fa;
-      --ok:#34d399;
-      --danger:#fb7185;
+      --bg:#2a120a;
+      --bg2:#3b1a10;
+      --text:#fff3e6;
+      --muted: rgba(255,223,206,.74);
+      --line: rgba(255,223,206,.18);
+      --card: rgba(255,255,255,.06);
+      --shadow: 0 24px 80px rgba(39,14,6,.5);
+      --accent:#ff8a3d;
+      --accent2:#ff4d2e;
+      --ok:#f6b74a;
+      --danger:#ff6b4a;
       --radius:18px;
       --radius2:26px;
       --max: 1060px;
@@ -28,8 +28,8 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       background:
-        radial-gradient(900px 500px at 20% 0%, rgba(96,165,250,.20), transparent 60%),
-        radial-gradient(900px 500px at 85% 15%, rgba(94,234,212,.14), transparent 60%),
+        radial-gradient(900px 500px at 20% 0%, rgba(255,138,61,.25), transparent 60%),
+        radial-gradient(900px 500px at 85% 15%, rgba(255,77,46,.20), transparent 60%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       color:var(--text);
       line-height:1.5;
@@ -38,9 +38,9 @@
     .container{max-width:var(--max); margin:0 auto; padding:0 20px}
     header{
       position:sticky; top:0; z-index:10;
-      background: rgba(11,16,32,.72);
+      background: rgba(42,18,10,.78);
       backdrop-filter: blur(10px);
-      border-bottom:1px solid rgba(231,236,255,.08);
+      border-bottom:1px solid rgba(255,223,206,.12);
     }
     .header-inner{
       height:72px;
@@ -51,14 +51,14 @@
     .logo{
       width:40px;height:40px;border-radius:14px;
       background:
-        radial-gradient(circle at 30% 30%, rgba(94,234,212,.9), rgba(96,165,250,.5) 45%, rgba(0,0,0,0) 70%),
-        linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0));
-      border:1px solid rgba(231,236,255,.16);
-      box-shadow: 0 10px 40px rgba(0,0,0,.25);
+        radial-gradient(circle at 30% 30%, rgba(255,138,61,.92), rgba(255,77,46,.55) 45%, rgba(0,0,0,0) 70%),
+        linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,0));
+      border:1px solid rgba(255,223,206,.22);
+      box-shadow: 0 10px 40px rgba(70,24,10,.35);
     }
     .btn{
-      border:1px solid rgba(231,236,255,.14);
-      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,223,206,.18);
+      background: rgba(255,255,255,.06);
       color:var(--text);
       padding:10px 14px;
       border-radius:12px;
@@ -67,8 +67,8 @@
       display:inline-flex; gap:10px; align-items:center;
     }
     .btn.primary{
-      background: linear-gradient(135deg, rgba(94,234,212,.22), rgba(96,165,250,.18));
-      border-color: rgba(94,234,212,.25);
+      background: linear-gradient(135deg, rgba(255,138,61,.28), rgba(255,77,46,.22));
+      border-color: rgba(255,138,61,.35);
     }
     .btn:disabled{opacity:.45; cursor:not-allowed}
     main{padding:26px 0 72px}
@@ -77,8 +77,8 @@
 
     .shell{
       margin-top:18px;
-      border:1px solid rgba(231,236,255,.14);
-      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,223,206,.20);
+      background: rgba(255,255,255,.05);
       border-radius: var(--radius2);
       box-shadow: var(--shadow);
       overflow:hidden;
@@ -86,43 +86,43 @@
     .shell-top{
       padding:14px 16px;
       display:flex; justify-content:space-between; align-items:center; gap:10px;
-      border-bottom:1px solid rgba(231,236,255,.08);
-      background: rgba(255,255,255,.02);
+      border-bottom:1px solid rgba(255,223,206,.12);
+      background: rgba(255,255,255,.04);
     }
     .chip{
       display:inline-flex; gap:8px; align-items:center;
       padding:7px 10px; border-radius:999px;
-      border:1px solid rgba(231,236,255,.14);
-      background:rgba(0,0,0,.16);
-      color: rgba(231,236,255,.85);
+      border:1px solid rgba(255,223,206,.20);
+      background:rgba(42,18,10,.35);
+      color: rgba(255,223,206,.9);
       font-size:.88rem;
     }
-    .chip .dot{width:9px;height:9px;border-radius:99px;background:var(--accent2); box-shadow:0 0 0 4px rgba(96,165,250,.10)}
+    .chip .dot{width:9px;height:9px;border-radius:99px;background:var(--accent2); box-shadow:0 0 0 4px rgba(255,77,46,.18)}
     .steps{
       display:flex; gap:10px; flex-wrap:wrap;
       padding:12px 16px;
-      border-bottom:1px solid rgba(231,236,255,.08);
+      border-bottom:1px solid rgba(255,223,206,.12);
     }
     .step{
       display:flex; gap:10px; align-items:center;
       padding:8px 10px;
       border-radius:14px;
-      border:1px solid rgba(231,236,255,.12);
-      background: rgba(255,255,255,.02);
-      color: rgba(231,236,255,.78);
+      border:1px solid rgba(255,223,206,.18);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,223,206,.78);
       font-weight:700;
       font-size:.92rem;
     }
     .step.active{
-      border-color: rgba(94,234,212,.26);
-      background: rgba(94,234,212,.08);
-      color: rgba(231,236,255,.92);
+      border-color: rgba(255,138,61,.32);
+      background: rgba(255,138,61,.12);
+      color: rgba(255,223,206,.95);
     }
     .n{
       width:24px; height:24px; border-radius:10px;
       display:grid; place-items:center;
-      border:1px solid rgba(231,236,255,.14);
-      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,223,206,.20);
+      background: rgba(42,18,10,.35);
       font-size:.85rem;
     }
     .content{padding:16px}
@@ -133,60 +133,60 @@
       align-items:start;
     }
     .panel{
-      border:1px solid rgba(231,236,255,.12);
-      background: rgba(0,0,0,.14);
+      border:1px solid rgba(255,223,206,.18);
+      background: rgba(42,18,10,.28);
       border-radius: var(--radius);
       padding:14px;
     }
     .field{margin-top:10px}
-    .field label{display:block; font-size:.88rem; color: rgba(231,236,255,.70); margin-bottom:6px}
+    .field label{display:block; font-size:.88rem; color: rgba(255,223,206,.74); margin-bottom:6px}
     .field input, .field select{
       width:100%;
       padding:12px 12px;
       border-radius:12px;
-      border:1px solid rgba(231,236,255,.14);
-      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,223,206,.20);
+      background: rgba(42,18,10,.35);
       color: var(--text);
       outline:none;
     }
-    .field input:focus, .field select:focus{border-color: rgba(96,165,250,.35)}
+    .field input:focus, .field select:focus{border-color: rgba(255,138,61,.5)}
     .checklist{margin:10px 0 0; padding:0; list-style:none; display:grid; gap:8px}
     .check{
       display:flex; gap:10px; align-items:flex-start;
       padding:10px 10px;
-      border:1px solid rgba(231,236,255,.10);
+      border:1px solid rgba(255,223,206,.16);
       border-radius:14px;
-      background: rgba(255,255,255,.02);
+      background: rgba(255,255,255,.04);
     }
     .check input{margin-top:3px}
     .check strong{display:block}
     .check span{display:block; color: var(--muted); font-size:.92rem}
 
     .drop{
-      border:1px dashed rgba(231,236,255,.22);
-      background: rgba(255,255,255,.02);
+      border:1px dashed rgba(255,223,206,.25);
+      background: rgba(255,255,255,.04);
       border-radius:16px;
       padding:14px;
       text-align:center;
-      color: rgba(231,236,255,.72);
+      color: rgba(255,223,206,.78);
     }
-    .drop small{display:block; margin-top:8px; color: rgba(231,236,255,.55)}
+    .drop small{display:block; margin-top:8px; color: rgba(255,223,206,.6)}
     .pill{
       display:inline-flex; gap:8px; align-items:center;
-      border:1px solid rgba(231,236,255,.14);
-      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,223,206,.20);
+      background: rgba(255,255,255,.05);
       padding:8px 10px;
       border-radius:999px;
       margin-top:10px;
       font-size:.9rem;
     }
-    .pill .b{width:10px;height:10px;border-radius:99px;background:var(--ok); box-shadow:0 0 0 4px rgba(52,211,153,.10)}
+    .pill .b{width:10px;height:10px;border-radius:99px;background:var(--ok); box-shadow:0 0 0 4px rgba(246,183,74,.16)}
     .actions{
       display:flex; justify-content:space-between; align-items:center;
       gap:10px;
       padding:14px 16px;
-      border-top:1px solid rgba(231,236,255,.08);
-      background: rgba(255,255,255,.02);
+      border-top:1px solid rgba(255,223,206,.12);
+      background: rgba(255,255,255,.04);
     }
     .kpi{
       display:grid; gap:10px; margin-top:10px;
@@ -194,15 +194,15 @@
     .kpi .row{
       display:flex; justify-content:space-between; gap:12px;
       padding:10px 12px;
-      border:1px solid rgba(231,236,255,.10);
-      background: rgba(255,255,255,.02);
+      border:1px solid rgba(255,223,206,.16);
+      background: rgba(255,255,255,.04);
       border-radius:14px;
-      color: rgba(231,236,255,.86);
+      color: rgba(255,223,206,.9);
       font-size:.95rem;
     }
     .kpi .row.total{
-      border-color: rgba(94,234,212,.22);
-      background: linear-gradient(135deg, rgba(94,234,212,.10), rgba(96,165,250,.08));
+      border-color: rgba(255,138,61,.32);
+      background: linear-gradient(135deg, rgba(255,138,61,.14), rgba(255,77,46,.12));
       font-weight:800;
     }
 
@@ -217,7 +217,7 @@
       <div class="header-inner">
         <a class="brand" href="index.html">
           <span class="logo" aria-hidden="true"></span>
-          <span>Box3Pilot <span style="display:block;font-size:.78rem;color:rgba(231,236,255,.65);font-weight:650">Demo‑wizard</span></span>
+          <span>Box3Pilot <span style="display:block;font-size:.78rem;color:rgba(255,223,206,.7);font-weight:650">Demo‑wizard</span></span>
         </a>
         <div style="display:flex; gap:10px; align-items:center">
           <a class="btn" href="index.html">← Terug</a>
@@ -255,13 +255,13 @@
         <div class="actions">
           <button class="btn" id="back" disabled>← Vorige</button>
           <div style="display:flex; gap:10px; align-items:center">
-            <span style="color:rgba(231,236,255,.60); font-size:.92rem" id="hint">Stap 1 van 4</span>
+            <span style="color:rgba(255,223,206,.65); font-size:.92rem" id="hint">Stap 1 van 4</span>
             <button class="btn primary" id="next">Volgende →</button>
           </div>
         </div>
       </div>
 
-      <p style="margin-top:12px; color:rgba(231,236,255,.55); font-size:.92rem">
+      <p style="margin-top:12px; color:rgba(255,223,206,.6); font-size:.92rem">
         Tip: in de echte app wordt elke AI‑herkenning voorzien van “bron + confidence + override”, en krijgt elk vermogensobject een bewijs‑map.
       </p>
     </div>
@@ -377,7 +377,7 @@
           </div>
 
           <div class="pill" style="margin-top:12px">
-            <span class="b" style="background:var(--accent2); box-shadow:0 0 0 4px rgba(96,165,250,.10)"></span>
+            <span class="b" style="background:var(--accent2); box-shadow:0 0 0 4px rgba(255,77,46,.18)"></span>
             Volgende: kies je vermogenscategorieën
           </div>
         `;
@@ -450,7 +450,7 @@
 
           <div class="panel" style="margin-top:12px">
             <strong>Snelle controles (demo)</strong>
-            <ul style="margin:10px 0 0; color:rgba(231,236,255,.82)">
+            <ul style="margin:10px 0 0; color:rgba(255,223,206,.85)">
               <li>Compleetheid dossier: <strong>${completeness()}%</strong></li>
               <li>Resultaat vóór heffingsvrij: <strong>${fmtEUR(c.resultaat)}</strong></li>
               <li>Belastbaar: <strong>${fmtEUR(c.belastbaar)}</strong> • Belasting: <strong>${fmtEUR(c.belasting)}</strong></li>
